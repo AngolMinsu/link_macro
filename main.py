@@ -26,15 +26,25 @@ driver.implicitly_wait(time_to_wait=2)
 def start():
     # 웹 페이지 연결
     driver.get(url="https://www.ticketlink.co.kr/home")
-    time.sleep(1)
-    # 로그인
-    driver.find_element_by_css_selector('#logstatus').click()
-    driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
-    time.sleep(0.5)
-    driver.find_element_by_id('userId').send_keys(data.id)
-    driver.find_element_by_id('userPwd').send_keys(data.pw)
+    time.sleep(2)
 
-    driver.find_element_by_css_selector('#btn_login').click()
+# 로그인
+def login():
+    driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/header/div[1]/div/div[2]/ul/li[1]/a').click()
     time.sleep(0.5)
+    driver.switch_to.window(driver.window_handles[1])
+    print(driver.title)
+    driver.find_element(By.ID,'id').send_keys(data.id)
+    driver.find_element(By.ID,'pw').send_keys(data.pw)
+    driver.find_element(By.ID,'loginBtn').click()
+    
+def search():
+    ticket_name = data.ticket_name
+    search = driver.find_element(By.ID,"search")
+    search.send_keys(ticket_name)
+    search.send_keys(Keys.ENTER)
 
 start()
+login()
+time.sleep(100)
+search()
