@@ -82,9 +82,12 @@ def reserve_button():
         select_date(day)
         # WebDriverWait(driver,1).until(EC.presence_of_all_elements_located(By.CSS_SELECTOR,'.produect_time_btn'))
         # 여기를 좀 다듬고 싶은데 좋은 아이디어가 없나...
-        time.sleep(0.6)
-        button.click()
-    
+        elements = driver.find_elements(By.CSS_SELECTOR,'.common_btn')
+        for btn in elements:
+            if btn.text == '예매하기':
+                time.sleep(0.6)
+                btn.click()
+        
     except Exception as e :
         if e == NoSuchWindowException:
             print("윈도우 창이 꺼졌습니다.")
