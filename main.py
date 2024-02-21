@@ -68,32 +68,30 @@ def select_date(day):
         if element.text == str(day):
             element.click()
             print(f"{day}을(를) 선택했습니다.")
-            time.sleep(0.2)
 
 def reserve_button():
     while True:
         try:
             button = driver.find_element(By.CSS_SELECTOR, '.common_btn')
-            if button.get_attribute('aria-disabled') == 'true':
+            while button.get_attribute('aria-disabled') == 'true':
                 print("아직 판매 예정입니다.")
-                time.sleep(0.5)
-                reserve_button()
-            else:
-                print("판매중 입니다. 날짜 고르기")
-                select_date(day)
-                button.click()
-                break
+                time.sleep(0.8)
+                driver.refresh()
+    
+            print("판매중 입니다. 날짜 고르기")
+            select_date(day)
+            # WebDriverWait(driver,1).until(EC.presence_of_all_elements_located(By.CSS_SELECTOR,'.produect_time_btn'))
+            # 여기를 좀 다듬고 싶은데 좋은 아이디어가 없나...
+            time.sleep(0.6)
+            button.click()
+            break
+    
         except Exception as e :
             if e == NoSuchWindowException:
                 print("윈도우 창이 꺼졌습니다.")
             if e == KeyboardInterrupt:
                 print("키보드 인터럽이 들어왔습니다.")
             break
-
-def select_seat():
-    # 포도알 선택하는 창
-    driver.switch_to.window(driver.window_handles[-1])
-    pass
 
 def selected_seat():
     try:
@@ -103,8 +101,8 @@ def selected_seat():
         print("초기화 버튼이 나타남!")
         next_button = driver.find_element(By.CSS_SELECTOR,'a.btn.ng-binding.btn_full')
         next_button.click()
-    except Exception:
-        print("예기치 못한 상황이 발생했습니다. 지금부터는 사용자가 알아서 클릭하면 됩니다"+Exception)
+    except :
+        pass
         
 def captcha():
     driver.switch_to.window(driver.window_handles[-1])
@@ -173,4 +171,4 @@ search(ticket_name)
 reserve_button()
 captcha()
 selected_seat()
-time.sleep(10)
+time.sleep(100)
