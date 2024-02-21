@@ -69,29 +69,27 @@ def select_date(day):
             element.click()
             print(f"{day}을(를) 선택했습니다.")
 
-def reserve_button():
-    while True:
-        try:
+def reserve_button(): 
+    try:
+        button = driver.find_element(By.CSS_SELECTOR, '.common_btn')
+        while button.get_attribute('aria-disabled') == 'true':
+            print("아직 판매 예정입니다.")
+            time.sleep(0.8)
+            driver.refresh()
             button = driver.find_element(By.CSS_SELECTOR, '.common_btn')
-            while button.get_attribute('aria-disabled') == 'true':
-                print("아직 판매 예정입니다.")
-                time.sleep(0.8)
-                driver.refresh()
     
-            print("판매중 입니다. 날짜 고르기")
-            select_date(day)
-            # WebDriverWait(driver,1).until(EC.presence_of_all_elements_located(By.CSS_SELECTOR,'.produect_time_btn'))
-            # 여기를 좀 다듬고 싶은데 좋은 아이디어가 없나...
-            time.sleep(0.6)
-            button.click()
-            break
+        print("판매중 입니다. 날짜 고르기")
+        select_date(day)
+        # WebDriverWait(driver,1).until(EC.presence_of_all_elements_located(By.CSS_SELECTOR,'.produect_time_btn'))
+        # 여기를 좀 다듬고 싶은데 좋은 아이디어가 없나...
+        time.sleep(0.6)
+        button.click()
     
-        except Exception as e :
-            if e == NoSuchWindowException:
-                print("윈도우 창이 꺼졌습니다.")
-            if e == KeyboardInterrupt:
-                print("키보드 인터럽이 들어왔습니다.")
-            break
+    except Exception as e :
+        if e == NoSuchWindowException:
+            print("윈도우 창이 꺼졌습니다.")
+        if e == KeyboardInterrupt:
+            print("키보드 인터럽이 들어왔습니다.")
 
 def selected_seat():
     try:
