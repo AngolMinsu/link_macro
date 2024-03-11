@@ -95,15 +95,21 @@ def reserve_button():
             print("키보드 인터럽이 들어왔습니다.")
 
 def selected_seat():
-    try:
-        WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "button.btn.btn_full.ng-scope"))
-    )
-        print("초기화 버튼이 나타남!")
-        next_button = driver.find_element(By.CSS_SELECTOR,'a.btn.ng-binding.btn_full')
-        next_button.click()
-    except :
-        pass
+    while True:
+        try:
+            WebDriverWait(driver, 600).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "button.btn.btn_full.ng-scope")
+                )
+            )
+            print("초기화 버튼이 나타남!")
+            next_button = driver.find_element(By.CSS_SELECTOR, "a.btn.ng-binding.btn_full")
+            next_button.click()
+            time.sleep(300)
+            break
+        except:
+            driver.refresh()
+            pass
         
 def captcha():
     driver.switch_to.window(driver.window_handles[-1])
@@ -112,7 +118,10 @@ def captcha():
 
     # 부정예매방지 문자 이미지 요소 선택
     try:
-        captchaPng = WebDriverWait(driver, 0.1).until(
+        if data.captcha == False:
+            selected_seat()
+            pass
+        captchaPng = WebDriverWait(driver, 600).until(
             EC.presence_of_element_located((By.ID, "captcha_img"))
         )
 
@@ -163,8 +172,8 @@ def captcha():
                 selected_seat()
                 break
     except:
+        # 캡챠가 없으니깐 좌석 고르는곳으로 넘어감
         selected_seat()
-    pass
 
 start()
 QR_login()
@@ -172,4 +181,7 @@ search(ticket_name)
 reserve_button()
 captcha()
 selected_seat()
-time.sleep(100)
+time.sleep(300)
+# 수정할 점!
+# 1. 대기시간이 길 경우 캡챠 웨잇이 통과되어 버림
+# 2. 이선좌 이슈 및 선택가능한 좌석이 없으면 바로 꺼져버림
